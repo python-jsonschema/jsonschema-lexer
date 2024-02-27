@@ -31,9 +31,12 @@ Here's a simple example:
 
 .. code-block:: python
 
-  from jsonschema_lexer.lexer import JSONSchemaLexer
-
+  # Import the JSONSchemaLexer class from the package
+  from jsonschema_lexer import JSONSchemaLexer
+  
+  from rich.console import Console
   from rich.syntax import Syntax
+  
   console = Console()
 
   code = """
