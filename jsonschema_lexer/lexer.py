@@ -1,21 +1,27 @@
+"""
+Contains the main functionality of the JSONSchemaLexer.
+"""
+
+from typing import Any, ClassVar
+
 from pygments.lexer import RegexLexer, include
 from pygments.token import Token
 
 
 def _get_regex_from_options(options: list[str]) -> str:
     """
-    Constructs a regular expression pattern allowing any string from the options list.
+    Constructs regex allowing any string from the options list.
 
     Args:
-        options (list[str]): List of options to be included in the regex pattern.
+        options (list[str]): List of options to be included
+        in the regex pattern.
 
     Returns:
         str: Regular expression pattern constructed from the options.
 
     """
     options = ['"' + option + '"' for option in options]
-    regex_str = "(" + "|".join(options) + ")"
-    return regex_str
+    return "(" + "|".join(options) + ")"
 
 
 class JSONSchemaLexer(RegexLexer):
@@ -25,7 +31,7 @@ class JSONSchemaLexer(RegexLexer):
 
     name = "JSON Schema Lexer"
 
-    data_types = [
+    data_types: ClassVar[list[str]] = [
         "object",
         "integer",
         "string",
@@ -34,7 +40,7 @@ class JSONSchemaLexer(RegexLexer):
         "boolean",
         "null",
     ]
-    core_keywords = [
+    core_keywords: ClassVar[list[str]] = [
         r"\$schema",
         r"\$id",
         r"\$ref",
@@ -45,7 +51,7 @@ class JSONSchemaLexer(RegexLexer):
         r"\$anchor",
         r"\$vocabulary",
     ]
-    applicator_keywords = [
+    applicator_keywords: ClassVar[list[str]] = [
         "oneOf",
         "allOf",
         "anyOf",
@@ -62,7 +68,7 @@ class JSONSchemaLexer(RegexLexer):
         "contains",
         "items",
     ]
-    meta_data_keywords = [
+    meta_data_keywords: ClassVar[list[str]] = [
         "title",
         "description",
         "default",
@@ -71,7 +77,7 @@ class JSONSchemaLexer(RegexLexer):
         "readOnly",
         "writeOnly",
     ]
-    validation_keywords = [
+    validation_keywords: ClassVar[list[str]] = [
         "type",
         "enum",
         "const",
@@ -93,7 +99,7 @@ class JSONSchemaLexer(RegexLexer):
         "maxContains",
         "uniqueItems",
     ]
-    other_keywords = [
+    other_keywords: ClassVar[list[str]] = [
         "format",
         "unevaluatedItems",
         "unevaluatedProperties",
@@ -103,12 +109,13 @@ class JSONSchemaLexer(RegexLexer):
         "format_assertion",
     ]
 
-    tokens = {
+    tokens: ClassVar[dict[str, list[Any]]] = {
         "whitespace": [
             (r"\s+", Token.Whitespace),
         ],
         "data_types": [
-            # Used Literal type here to differentiate the highlighted color of data types from other keywords
+            # Used Literal type here to differentiate the highlighted
+            # color of data types from other keywords
             (_get_regex_from_options(data_types), Token.Literal),
         ],
         "core_keywords": [
@@ -186,7 +193,8 @@ class JSONSchemaLexer(RegexLexer):
             (r",", Token.Punctuation),
             (r"]", Token.Punctuation, "#pop"),
         ],
-        # a json value - either a simple value or a complex value (object or array)
+        # a json value - either a simple value or a
+        # complex value (object or array)
         "value": [
             include("whitespace"),
             include("simplevalue"),
