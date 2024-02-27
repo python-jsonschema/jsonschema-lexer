@@ -1,4 +1,4 @@
-====================
+=======================
 ``jsonschema-lexer``
 ====================
 
@@ -16,11 +16,11 @@
   :alt: Build status
   :target: https://github.com/python-jsonschema/jsonschema-lexer/actions?query=workflow%3ACI
 
-
 Introduction
 ------------
 
-`jsonschema-lexer` is a Python package that provides a JSON Schema lexer for syntax highlighting JSON Schema documents. It utilizes Pygments, a syntax highlighting library, to tokenize JSON Schema documents according to the JSON Schema specification.
+``jsonschema-lexer`` is a Python package that provides a JSON Schema lexer for syntax highlighting JSON Schema documents.
+It utilizes Pygments, a syntax highlighting library, to tokenize JSON Schema documents according to the JSON Schema specification.
 
 Usage
 -----
