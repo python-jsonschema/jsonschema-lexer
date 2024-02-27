@@ -1,6 +1,7 @@
 from pygments.lexer import include, RegexLexer
 from pygments.token import Token
 
+
 def _get_regex_from_options(options: list[str]) -> str:
     """
     Constructs a regular expression pattern allowing any string from the options list.
@@ -15,12 +16,14 @@ def _get_regex_from_options(options: list[str]) -> str:
     regex_str = "(" + "|".join(options) + ")"
     return regex_str
 
+
 class JSONSchemaLexer(RegexLexer):
     """
     Lexer for JSON Schema syntax highlighting.
     """
+
     name = "JSON Schema Lexer"
-        
+
     data_types = ["object", "integer", "string", "number", "array", "boolean", "null"]
     core_keywords = [
         r"\$schema",
@@ -46,7 +49,7 @@ class JSONSchemaLexer(RegexLexer):
         "additionalProperties",
         "dependentSchemas",
         "propertyNames",
-        "prefixNames",
+        "prefixItems",
         "contains",
         "items",
     ]
@@ -81,7 +84,15 @@ class JSONSchemaLexer(RegexLexer):
         "maxContains",
         "uniqueItems",
     ]
-    other_keywords = ["format", "unevaluated", "content", "format_assertion"]
+    other_keywords = [
+        "format",
+        "unevaluatedItems",
+        "unevaluatedProperties",
+        "contentEncoding",
+        "contentMediaType",
+        "contentSchema",
+        "format_assertion",
+    ]
 
     tokens = {
         "whitespace": [
@@ -133,7 +144,6 @@ class JSONSchemaLexer(RegexLexer):
             include("meta_data_keywords"),
             include("other_keywords"),
         ],
-
         # represents a simple terminal value
         "simplevalue": [
             include("data_types"),
@@ -141,7 +151,6 @@ class JSONSchemaLexer(RegexLexer):
             (r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?", Token.Number.Integer),
             ('"(\\|"|[^"])*"', Token.String.Double),
         ],
-
         # the right hand side of an object, after the attribute name
         "objectattribute": [
             include("value"),
@@ -151,7 +160,6 @@ class JSONSchemaLexer(RegexLexer):
             # a closing bracket terminates the entire object, so pop twice
             (r"}", Token.Punctuation, ("#pop", "#pop")),
         ],
-        
         # a json object - { attr, attr, ... }
         "objectvalue": [
             include("whitespace"),
@@ -159,7 +167,6 @@ class JSONSchemaLexer(RegexLexer):
             (r'"(\\\\|\\"|[^"])*"', Token.Name.Tag, "objectattribute"),
             (r"}", Token.Punctuation, "#pop"),
         ],
-
         # json array - [ value, value, ... }
         "arrayvalue": [
             include("whitespace"),
@@ -167,7 +174,6 @@ class JSONSchemaLexer(RegexLexer):
             (r",", Token.Punctuation),
             (r"]", Token.Punctuation, "#pop"),
         ],
-
         # a json value - either a simple value or a complex value (object or array)
         "value": [
             include("whitespace"),
@@ -175,7 +181,6 @@ class JSONSchemaLexer(RegexLexer):
             (r"{", Token.Punctuation, "objectvalue"),
             (r"\[", Token.Punctuation, "arrayvalue"),
         ],
-
         # the root of a json document whould be a value
         "root": [
             include("value"),
