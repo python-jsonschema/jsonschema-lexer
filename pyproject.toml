@@ -29,7 +29,9 @@ classifiers = [
 
 ]
 dynamic = ["version"]
-
+dependencies = [
+  "Pygments==2.17.2"
+]
 
 [project.urls]
 Issues = "https://github.com/python-jsonschema/jsonschema-lexer/issues/"
