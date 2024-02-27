@@ -25,7 +25,7 @@ It utilizes Pygments, a syntax highlighting library, to tokenize JSON Schema doc
 Usage
 -----
 
-Once installed, you can use it in your Python code to highlight JSON Schema documents. 
+Once installed, you can use it in your Python code to highlight JSON Schema documents.
 
 Here's a simple example:
 
@@ -33,10 +33,10 @@ Here's a simple example:
 
   # Import the JSONSchemaLexer class from the package
   from jsonschema_lexer import JSONSchemaLexer
-  
+
   from rich.console import Console
   from rich.syntax import Syntax
-  
+
   console = Console()
 
   code = """

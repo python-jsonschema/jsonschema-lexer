@@ -1,4 +1,4 @@
-from pygments.lexer import include, RegexLexer
+from pygments.lexer import RegexLexer, include
 from pygments.token import Token
 
 
@@ -11,6 +11,7 @@ def _get_regex_from_options(options: list[str]) -> str:
 
     Returns:
         str: Regular expression pattern constructed from the options.
+
     """
     options = ['"' + option + '"' for option in options]
     regex_str = "(" + "|".join(options) + ")"
@@ -24,7 +25,15 @@ class JSONSchemaLexer(RegexLexer):
 
     name = "JSON Schema Lexer"
 
-    data_types = ["object", "integer", "string", "number", "array", "boolean", "null"]
+    data_types = [
+        "object",
+        "integer",
+        "string",
+        "number",
+        "array",
+        "boolean",
+        "null",
+    ]
     core_keywords = [
         r"\$schema",
         r"\$id",
@@ -148,7 +157,10 @@ class JSONSchemaLexer(RegexLexer):
         "simplevalue": [
             include("data_types"),
             (r"(true|false)", Token.Number),
-            (r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?", Token.Number.Integer),
+            (
+                r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?",
+                Token.Number.Integer,
+            ),
             ('"(\\|"|[^"])*"', Token.String.Double),
         ],
         # the right hand side of an object, after the attribute name
