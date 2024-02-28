@@ -1,3 +1,3 @@
 """
-Fill me in!
+Provides the JSONSchema Lexer.
 """
