@@ -4,8 +4,8 @@ Contains the main functionality of the JSONSchemaLexer.
 
 from typing import ClassVar
 
-from pygments.lexers.data import (
-    JsonLexer,  # type: ignore[reportMissingTypeStubs]
+from pygments.lexers.data import ( # type: ignore[reportMissingTypeStubs]
+    JsonLexer,
 )
 from pygments.token import Token
 
