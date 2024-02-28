@@ -2,31 +2,17 @@
 Contains the main functionality of the JSONSchemaLexer.
 """
 
-from typing import Any, ClassVar
+from typing import ClassVar
 
-from pygments.lexer import RegexLexer, include
+from pygments.lexers.data import (
+    JsonLexer,  # type: ignore[reportMissingTypeStubs]
+)
 from pygments.token import Token
 
 
-def _get_regex_from_options(options: list[str]) -> str:
+class JSONSchemaLexer(JsonLexer):
     """
-    Constructs regex allowing any string from the options list.
-
-    Args:
-        options (list[str]): List of options to be included
-        in the regex pattern.
-
-    Returns:
-        str: Regular expression pattern constructed from the options.
-
-    """
-    options = ['"' + option + '"' for option in options]
-    return "(" + "|".join(options) + ")"
-
-
-class JSONSchemaLexer(RegexLexer):
-    """
-    Lexer for JSON Schema syntax highlighting.
+    For JSONSchema.
     """
 
     name = "JSON Schema Lexer"
@@ -41,15 +27,15 @@ class JSONSchemaLexer(RegexLexer):
         "null",
     ]
     core_keywords: ClassVar[list[str]] = [
-        r"\$schema",
-        r"\$id",
-        r"\$ref",
-        r"\$defs",
-        r"\$comment",
-        r"\$dynamicAnchor",
-        r"\$dynamicRef",
-        r"\$anchor",
-        r"\$vocabulary",
+        "$schema",
+        "$id",
+        "$ref",
+        "$defs",
+        "$comment",
+        "$dynamicAnchor",
+        "$dynamicRef",
+        "$anchor",
+        "$vocabulary",
     ]
     applicator_keywords: ClassVar[list[str]] = [
         "oneOf",
@@ -109,100 +95,32 @@ class JSONSchemaLexer(RegexLexer):
         "format_assertion",
     ]
 
-    tokens: ClassVar[dict[str, list[Any]]] = {
-        "whitespace": [
-            (r"\s+", Token.Whitespace),
-        ],
-        "data_types": [
-            # Used Literal type here to differentiate the highlighted
-            # color of data types from other keywords
-            (_get_regex_from_options(data_types), Token.Literal),
-        ],
-        "core_keywords": [
-            (
-                _get_regex_from_options(core_keywords),
-                Token.Keyword.Reserved,
-                "objectattribute",
-            ),
-        ],
-        "applicator_keywords": [
-            (
-                _get_regex_from_options(applicator_keywords),
-                Token.Keyword.Reserved,
-                "objectattribute",
-            ),
-        ],
-        "validation_keywords": [
-            (
-                _get_regex_from_options(validation_keywords),
-                Token.Keyword.Reserved,
-                "objectattribute",
-            ),
-        ],
-        "meta_data_keywords": [
-            (
-                _get_regex_from_options(meta_data_keywords),
-                Token.Keyword.Reserved,
-                "objectattribute",
-            ),
-        ],
-        "other_keywords": [
-            (
-                _get_regex_from_options(other_keywords),
-                Token.Keyword.Reserved,
-                "objectattribute",
-            ),
-        ],
-        "keywords": [
-            include("core_keywords"),
-            include("applicator_keywords"),
-            include("validation_keywords"),
-            include("meta_data_keywords"),
-            include("other_keywords"),
-        ],
-        # represents a simple terminal value
-        "simplevalue": [
-            include("data_types"),
-            (r"(true|false)", Token.Number),
-            (
-                r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?",
-                Token.Number.Integer,
-            ),
-            ('"(\\|"|[^"])*"', Token.String.Double),
-        ],
-        # the right hand side of an object, after the attribute name
-        "objectattribute": [
-            include("value"),
-            (r":", Token.Punctuation),
-            # comma terminates the attribute but expects more
-            (r",", Token.Punctuation, "#pop"),
-            # a closing bracket terminates the entire object, so pop twice
-            (r"}", Token.Punctuation, ("#pop", "#pop")),
-        ],
-        # a json object - { attr, attr, ... }
-        "objectvalue": [
-            include("whitespace"),
-            include("keywords"),
-            (r'"(\\\\|\\"|[^"])*"', Token.Name.Tag, "objectattribute"),
-            (r"}", Token.Punctuation, "#pop"),
-        ],
-        # json array - [ value, value, ... }
-        "arrayvalue": [
-            include("whitespace"),
-            include("value"),
-            (r",", Token.Punctuation),
-            (r"]", Token.Punctuation, "#pop"),
-        ],
-        # a json value - either a simple value or a
-        # complex value (object or array)
-        "value": [
-            include("whitespace"),
-            include("simplevalue"),
-            (r"{", Token.Punctuation, "objectvalue"),
-            (r"\[", Token.Punctuation, "arrayvalue"),
-        ],
-        # the root of a json document whould be a value
-        "root": [
-            include("value"),
-        ],
-    }
+    parsed_keywords: ClassVar[list[str]] = [
+        '"%s"' % keyword
+        for keyword in (
+            core_keywords
+            + applicator_keywords
+            + meta_data_keywords
+            + validation_keywords
+            + other_keywords
+        )
+    ]
+
+    parsed_data_types: ClassVar[list[str]] = [
+        '"%s"' % data_type for data_type in data_types
+    ]
+
+    def get_tokens_unprocessed(self, text: str):  # type: ignore[reportUnknownParameterType]
+        """
+        Add token classes to it according to JSON Schema.
+        """
+        for start, token, value in super().get_tokens_unprocessed(text):  # type: ignore[reportUnknownVariableType]
+            if token is Token.Name.Tag and value in self.parsed_keywords:
+                yield start, Token.Keyword, value
+            elif (
+                token is Token.String.Double
+                and value in self.parsed_data_types
+            ):
+                yield start, Token.Name.Decorator, value
+            else:
+                yield start, token, value
