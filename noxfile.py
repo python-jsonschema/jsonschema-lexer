@@ -6,7 +6,6 @@ import nox
 
 ROOT = Path(__file__).parent
 PYPROJECT = ROOT / "pyproject.toml"
-DOCS = ROOT / "docs"
 
 PACKAGE = ROOT / "jsonschema_lexer"
 
