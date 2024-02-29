@@ -37,7 +37,7 @@ def tests(session):
     """
     Run the test suite.
     """
-    session.install("pytest")
+    session.install("-r", REQUIREMENTS["tests"])
 
     if session.posargs and session.posargs[0] == "coverage":
         if len(session.posargs) > 1 and session.posargs[1] == "github":
