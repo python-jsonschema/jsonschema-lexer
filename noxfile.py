@@ -38,7 +38,6 @@ def tests(session):
     """
     Run the test suite.
     """
-
     session.install("-r", REQUIREMENTS["tests"])
 
     if session.posargs and session.posargs[0] == "coverage":
