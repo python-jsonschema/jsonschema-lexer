@@ -12,10 +12,16 @@ from pygments.token import Token
 
 class JSONSchemaLexer(JsonLexer):
     """
-    For JSONSchema.
+    A Pygments lexer for dialects of the JSON Schema specification.
     """
 
-    name = "JSON Schema Lexer"
+    name = "JSON Schema"
+    url = "https://json-schema.org"
+    aliases: ClassVar[list[str]] = ["jsonschema", "json-schema"]
+    mimetypes: ClassVar[list[str]] = [
+        "application/schema+json",
+        "application/schema-instance+json",
+    ]
 
     data_types: ClassVar[list[str]] = [
         "object",
