@@ -28,7 +28,9 @@ def keywords():
 def assert_single_token(lexer, s, token):
     """Show that a given string generates only one token."""
     tokens = list(lexer.get_tokens_unprocessed(s))
-    assert len(tokens) == 1 and s == tokens[0][2] and token == tokens[0][1]
+    assert len(tokens) == 1
+    assert s == tokens[0][2]
+    assert token == tokens[0][1]
 
 
 def assert_tokens(lexer, string, expected_tokens):
