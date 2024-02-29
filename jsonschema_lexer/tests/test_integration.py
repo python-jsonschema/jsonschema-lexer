@@ -1,13 +1,11 @@
 """
-    JSON Schema Lexer tests
+JSON Schema Lexer tests
 """
 
 from pygments.token import Token
 import pytest
 
-from jsonschema_lexer.lexer import JSONSchemaLexer
-
-# Test helpers.
+from jsonschema_lexer import JSONSchemaLexer
 
 
 @pytest.fixture()
@@ -26,7 +24,9 @@ def keywords():
 
 
 def assert_single_token(lexer, s, token):
-    """Show that a given string generates only one token."""
+    """
+    Assert a given string generates only one token.
+    """
     tokens = list(lexer.get_tokens_unprocessed(s))
     assert len(tokens) == 1
     assert s == tokens[0][2]
@@ -34,17 +34,12 @@ def assert_single_token(lexer, s, token):
 
 
 def assert_tokens(lexer, string, expected_tokens):
-    """Show that a given string generates the expected tokens."""
+    """
+    Assert a given string generates the expected tokens.
+    """
     tokens = list(lexer.get_tokens_unprocessed(string))
     parsed_tokens = [t[1] for t in tokens]
     assert parsed_tokens == expected_tokens
-
-
-# Tests
-
-
-def test_it_imports():
-    import jsonschema_lexer  # noqa: F401
 
 
 def test_data_type_tokens(lexer, data_types):

@@ -30,7 +30,7 @@ Here's a simple example:
 
 .. code-block:: python
 
-  from jsonschema_lexer.lexer import JSONSchemaLexer
+  from jsonschema_lexer import JSONSchemaLexer
 
   from rich.console import Console
   from rich.syntax import Syntax
