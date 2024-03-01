@@ -38,14 +38,14 @@ class JSONSchemaLexer(JsonLexer):
         match dialect_url:
             case '"https://json-schema.org/draft/2020-12/schema"':
                 return list(
-                    jsonschema.Draft202012Validator.VALIDATORS.keys()
+                    jsonschema.Draft202012Validator.VALIDATORS.keys(),
                 ) + [
                     "$schema",
                     "$id",
                 ]
             case '"https://json-schema.org/draft/2019-09/schema"':
                 return list(
-                    jsonschema.Draft201909Validator.VALIDATORS.keys()
+                    jsonschema.Draft201909Validator.VALIDATORS.keys(),
                 ) + [
                     "$schema",
                     "$id",
@@ -101,7 +101,9 @@ class JSONSchemaLexer(JsonLexer):
         return None
 
     def _find_key_value_from_json(
-        self, tokens: list[tuple[int, Any, str]], index: int
+        self,
+        tokens: list[tuple[int, Any, str]],
+        index: int,
     ):
         for i in range(index, len(tokens), 1):
             if tokens[i][1] is Token.String.Double:
@@ -123,7 +125,8 @@ class JSONSchemaLexer(JsonLexer):
         )
         if nearest_schema_index:
             dialect = self._find_key_value_from_json(
-                tokens, nearest_schema_index
+                tokens,
+                nearest_schema_index,
             )
             identifier = self.get_dialect_identifier(dialect)
             is_dialect_valid = (
