@@ -19,8 +19,7 @@
 Introduction
 ------------
 
-`jsonschema-lexer` is a Python package that provides a JSON Schema lexer for syntax highlighting JSON Schema documents based on the `2020-12 dialect`.
-It utilizes Pygments, a syntax highlighting library, to tokenize JSON Schema documents according to the JSON Schema specification.
+`jsonschema-lexer` provides a lexer for syntax highlighting JSON Schema documents via `Pygments <https://pygments.org/>`_.
 
 Usage
 -----
@@ -31,8 +30,7 @@ Here's a simple example:
 
 .. code-block:: python
 
-  # Import the JSONSchemaLexer class from the package
-  from jsonschema_lexer.lexer import JSONSchemaLexer
+  from jsonschema_lexer import JSONSchemaLexer
 
   from rich.console import Console
   from rich.syntax import Syntax

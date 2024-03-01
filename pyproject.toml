@@ -30,7 +30,7 @@ classifiers = [
 ]
 dynamic = ["version"]
 dependencies = [
-  "Pygments==2.17.2"
+  "Pygments>=2.17.2"
 ]
 
 [project.urls]
@@ -137,5 +137,4 @@ from-first = true
 
 [tool.ruff.lint.per-file-ignores]
 "noxfile.py" = ["ANN", "D100", "S101", "T201"]
-"docs/*" = ["ANN", "D", "INP001"]
 "jsonschema_lexer/tests/*" = ["ANN", "BLE001", "D", "PERF", "S"]
