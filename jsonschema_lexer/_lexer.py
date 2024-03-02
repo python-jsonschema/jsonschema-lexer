@@ -68,20 +68,14 @@ class JSONSchemaLexer(JsonLexer):
         syntax_stack: list[tuple[int, str]],
         token: str | None,
     ):
-        for i in range(len(syntax_stack) - 1, -1, -1):
-            if syntax_stack[i][1] == token:
-                return i
-        return None
+        return next((i for i, (_, t) in reversed(list(enumerate(syntax_stack))) if t == token), None)
 
     def _find_key_value_from_json(
         self,
         tokens: list[tuple[int, Any, str]],
         index: int,
     ):
-        for i in range(index, len(tokens), 1):
-            if tokens[i][1] is Token.String.Double:
-                return tokens[i][2]
-        return None
+        return next((t[2] for t in tokens[index:] if t[1] is Token.String.Double), None)
 
     def _get_nearest_valid_dialect(
         self,
