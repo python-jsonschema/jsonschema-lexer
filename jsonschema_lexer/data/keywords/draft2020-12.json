@@ -58,7 +58,6 @@
     "unevaluatedProperties",
     "contentEncoding",
     "contentMediaType",
-    "contentSchema",
-    "format_assertion"
+    "contentSchema"
   ]
 }
