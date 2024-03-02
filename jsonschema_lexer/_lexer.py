@@ -36,14 +36,14 @@ class JSONSchemaLexer(JsonLexer):
 
     default_dialect = None
 
-    def __init__(self, default_dialect: str | None=None):
-        super().__init__() # type: ignore[reportUnknownMemberType]
-        if default_dialect and default_dialect[0]!='"':
+    def __init__(self, default_dialect: str | None = None):
+        super().__init__()  # type: ignore[reportUnknownMemberType]
+        if default_dialect and default_dialect[0] != '"':
             default_dialect = '"' + default_dialect
-        
-        if default_dialect and default_dialect[-1]!='"':
+
+        if default_dialect and default_dialect[-1] != '"':
             default_dialect = default_dialect + '"'
-        
+
         self.default_dialect = default_dialect
 
     def get_dialect_keywords(self, dialect_url: str | None) -> list[str]:
@@ -172,7 +172,7 @@ class JSONSchemaLexer(JsonLexer):
                     syntax_stack,
                     nearest_schema_index - 1,
                 )
-        
+
         if self.default_dialect:
             return self.default_dialect
 
