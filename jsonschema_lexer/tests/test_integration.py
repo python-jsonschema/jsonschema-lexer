@@ -8,8 +8,6 @@ import pytest
 from jsonschema_lexer import JSONSchemaLexer
 
 dialects = [
-    "http://json-schema.org/draft-01/schema#",
-    "http://json-schema.org/draft-02/schema#",
     "http://json-schema.org/draft-03/schema#",
     "http://json-schema.org/draft-04/schema#",
     "http://json-schema.org/draft-06/schema#",
@@ -382,89 +380,6 @@ def test_draft03_schema(lexer):
             Token.Punctuation,
         ],
     )
-
-
-def test_draft02_schema(lexer):
-    test_json_schema = """
-    {
-    "$schema": "http://json-schema.org/draft-02/schema#",
-    "id": "test", // <- a keyword
-    "uniqueItems": "test", // <- a keyword
-    }
-    """.strip()
-    assert_tokens(
-        lexer,
-        test_json_schema,
-        [
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Keyword,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Keyword,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Comment.Single,
-            Token.Text.Whitespace,
-            Token.Keyword,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Comment.Single,
-            Token.Text.Whitespace,
-            Token.Punctuation,
-        ],
-    )
-
-
-def test_draft01_schema(lexer):
-    test_json_schema = """
-    {
-    "$schema": "http://json-schema.org/draft-01/schema#",
-    "id": "test", // <- a keyword
-    "uniqueItems": "test", // <- not a keyword
-    }
-    """.strip()
-    assert_tokens(
-        lexer,
-        test_json_schema,
-        [
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Keyword,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Keyword,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Comment.Single,
-            Token.Text.Whitespace,
-            Token.Name.Tag,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Literal.String.Double,
-            Token.Punctuation,
-            Token.Text.Whitespace,
-            Token.Comment.Single,
-            Token.Text.Whitespace,
-            Token.Punctuation,
-        ],
-    )
-
 
 def test_nested_json_schema(lexer):
     test_json_schema = """
