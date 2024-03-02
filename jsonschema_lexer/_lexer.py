@@ -2,13 +2,15 @@
 Contains the main functionality of the JSONSchemaLexer.
 """
 
+from importlib.resources import files
+from pathlib import Path
 from typing import Any, ClassVar
+import json
 
 from pygments.lexers.data import (  # type: ignore[reportMissingTypeStubs]
     JsonLexer,
 )
 from pygments.token import Token
-import jsonschema
 
 
 class JSONSchemaLexer(JsonLexer):
@@ -33,11 +35,13 @@ class JSONSchemaLexer(JsonLexer):
         '"boolean"',
         '"null"',
     ]
-
+    keywords: ClassVar[dict[str | None, list[str]]] = {}
+    identifier: ClassVar[dict[str | None, str]] = {}
     default_dialect = None
 
     def __init__(self, default_dialect: str | None = None):
         super().__init__()  # type: ignore[reportUnknownMemberType]
+        self._populate_keywords_and_identifiers()
         if default_dialect and default_dialect[0] != '"':
             default_dialect = '"' + default_dialect
 
@@ -46,61 +50,25 @@ class JSONSchemaLexer(JsonLexer):
 
         self.default_dialect = default_dialect
 
-    def get_dialect_keywords(self, dialect_url: str | None) -> list[str]:
-        match dialect_url:
-            case '"https://json-schema.org/draft/2020-12/schema"':
-                return list(
-                    jsonschema.Draft202012Validator.VALIDATORS.keys(),
-                ) + [
-                    "$schema",
-                    "$id",
-                ]
-            case '"https://json-schema.org/draft/2019-09/schema"':
-                return list(
-                    jsonschema.Draft201909Validator.VALIDATORS.keys(),
-                ) + [
-                    "$schema",
-                    "$id",
-                ]
-            case '"http://json-schema.org/draft-07/schema#"':
-                return list(jsonschema.Draft7Validator.VALIDATORS.keys()) + [
-                    "$schema",
-                    "$id",
-                ]
-            case '"http://json-schema.org/draft-06/schema#"':
-                return list(jsonschema.Draft6Validator.VALIDATORS.keys()) + [
-                    "$schema",
-                    "$id",
-                ]
-            case '"http://json-schema.org/draft-04/schema#"':
-                return list(jsonschema.Draft4Validator.VALIDATORS.keys()) + [
-                    "$schema",
-                    "id",
-                ]
-            case '"http://json-schema.org/draft-03/schema#"':
-                return list(jsonschema.Draft3Validator.VALIDATORS.keys()) + [
-                    "$schema",
-                    "id",
-                ]
-            case _:
-                return []
+    def _populate_keywords_and_identifiers(self):
+        dialect_files = files("jsonschema_lexer") / "data" / "keywords"
+        if not dialect_files.is_dir():
+            dialect_files = Path(__file__).parent.parent / "data" / "keywords"
+        for dialect_file in dialect_files.iterdir():
+            with dialect_file.open() as file:
+                json_content = json.load(file)
+                dialect_name = self._make_string_double_quoted(
+                    json_content["dialect"],
+                )
+                self.keywords[dialect_name] = json_content["keywords"]
+                self.identifier[dialect_name] = (
+                    self._make_string_double_quoted(
+                        json_content["identifier"],
+                    )
+                )
 
-    def get_dialect_identifier(self, dialect: str | None):
-        match dialect:
-            case '"https://json-schema.org/draft/2020-12/schema"':
-                return '"$id"'
-            case '"https://json-schema.org/draft/2019-09/schema"':
-                return '"$id"'
-            case '"http://json-schema.org/draft-07/schema#"':
-                return '"$id"'
-            case '"http://json-schema.org/draft-06/schema#"':
-                return '"$id"'
-            case '"http://json-schema.org/draft-04/schema#"':
-                return '"id"'
-            case '"https://json-schema.org/draft-03/schema"':
-                return '"id"'
-            case _:
-                return None
+    def _make_string_double_quoted(self, string: str):
+        return '"' + string + '"'
 
     def _find_rightmost_token_index(
         self,
@@ -140,11 +108,9 @@ class JSONSchemaLexer(JsonLexer):
                 tokens,
                 nearest_schema_index,
             )
-            identifier = self.get_dialect_identifier(dialect)
-            is_dialect_valid = (
-                True
-                if identifier or syntax_stack[nearest_schema_index][0] == 0
-                else False
+            identifier = self.identifier.get(dialect, None)
+            is_dialect_valid = bool(
+                identifier or syntax_stack[nearest_schema_index][0] == 0,
             )
             nearest_identifier_index = self._find_rightmost_token_index(
                 syntax_stack[: index + 1],
@@ -209,12 +175,14 @@ class JSONSchemaLexer(JsonLexer):
                 dialect = self._get_nearest_valid_dialect(tokens, syntax_stack)
                 yield self._parse_token_tuple(
                     (start, token, value),
-                    self.get_dialect_keywords(dialect),
+                    self.keywords.get(dialect, []),
                 )
 
     def get_tokens_unprocessed(self, text: str):  # type: ignore[reportUnknownParameterType]
         """
         Add token classes to it according to JSON Schema.
         """
-        json_tokens: list[tuple[int, Any, str]] = list(super().get_tokens_unprocessed(text))  # type: ignore[reportUnknownParameterType]
+        json_tokens: list[tuple[int, Any, str]] = list(
+            super().get_tokens_unprocessed(text),
+        )  # type: ignore[reportUnknownParameterType]
         yield from self.map_tokens_by_schema(json_tokens)

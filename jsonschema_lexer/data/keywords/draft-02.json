@@ -1,0 +1,33 @@
+{
+  "dialect": "http://json-schema.org/draft-02/schema#",
+  "identifier": "id",
+  "keywords": [
+    "type",
+    "properties",
+    "items",
+    "optional",
+    "additionalProperties",
+    "requires",
+    "minimum",
+    "maximum",
+    "minimumCanEqual",
+    "maximumCanEqual",
+    "minItems",
+    "maxItems",
+    "uniqueItems",
+    "pattern",
+    "minLength",
+    "maxLength",
+    "enum",
+    "title",
+    "description",
+    "format",
+    "contentEncoding",
+    "default",
+    "divisibleBy",
+    "disallow",
+    "extends",
+    "$schema",
+    "id"
+  ]
+}
