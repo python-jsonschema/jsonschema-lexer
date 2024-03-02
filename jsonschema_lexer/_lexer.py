@@ -83,8 +83,8 @@ class JSONSchemaLexer(JsonLexer):
         index: int,
     ):
         return next(
-            (t[2] for t in tokens[index:]
-            if t[1] is Token.String.Double), None,
+            (t[2] for t in tokens[index:] if t[1] is Token.String.Double),
+            None,
         )
 
     def _get_nearest_valid_dialect(
