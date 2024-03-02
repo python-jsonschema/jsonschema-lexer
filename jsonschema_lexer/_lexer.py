@@ -183,6 +183,6 @@ class JSONSchemaLexer(JsonLexer):
         Add token classes to it according to JSON Schema.
         """
         json_tokens: list[tuple[int, Any, str]] = list(
-            super().get_tokens_unprocessed(text),
-        )  # type: ignore[reportUnknownParameterType]
+            super().get_tokens_unprocessed(text), # type: ignore[reportUnknownParameterType]
+        )
         yield from self.map_tokens_by_schema(json_tokens)
