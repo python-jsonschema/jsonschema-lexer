@@ -53,22 +53,15 @@ class JSONSchemaLexer(JsonLexer):
     def _populate_keywords_and_identifiers(self):
         dialect_files = files("jsonschema_lexer") / "data" / "keywords"
         if not dialect_files.is_dir():
-            dialect_files = Path(__file__).parent.parent / "data" / "keywords"
+            dialect_files = Path(__file__).parent / "data" / "keywords"
         for dialect_file in dialect_files.iterdir():
             with dialect_file.open() as file:
                 json_content = json.load(file)
-                dialect_name = self._make_string_double_quoted(
-                    json_content["dialect"],
-                )
+                dialect_name = f'"{json_content["dialect"]}"'
                 self.keywords[dialect_name] = json_content["keywords"]
                 self.identifier[dialect_name] = (
-                    self._make_string_double_quoted(
-                        json_content["identifier"],
-                    )
+                    f'"{json_content["identifier"]}"'
                 )
-
-    def _make_string_double_quoted(self, string: str):
-        return '"' + string + '"'
 
     def _find_rightmost_token_index(
         self,
