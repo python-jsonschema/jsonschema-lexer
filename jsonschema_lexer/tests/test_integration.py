@@ -381,6 +381,7 @@ def test_draft03_schema(lexer):
         ],
     )
 
+
 def test_nested_json_schema(lexer):
     test_json_schema = """
     {
