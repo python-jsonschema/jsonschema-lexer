@@ -34,6 +34,18 @@ class JSONSchemaLexer(JsonLexer):
         '"null"',
     ]
 
+    default_dialect = None
+
+    def __init__(self, default_dialect: str | None=None):
+        super().__init__() # type: ignore[reportUnknownMemberType]
+        if default_dialect and default_dialect[0]!='"':
+            default_dialect = '"' + default_dialect
+        
+        if default_dialect and default_dialect[-1]!='"':
+            default_dialect = default_dialect + '"'
+        
+        self.default_dialect = default_dialect
+
     def get_dialect_keywords(self, dialect_url: str | None) -> list[str]:
         match dialect_url:
             case '"https://json-schema.org/draft/2020-12/schema"':
@@ -160,6 +172,9 @@ class JSONSchemaLexer(JsonLexer):
                     syntax_stack,
                     nearest_schema_index - 1,
                 )
+        
+        if self.default_dialect:
+            return self.default_dialect
 
         return None
 
