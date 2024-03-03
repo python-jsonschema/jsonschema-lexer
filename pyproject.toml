@@ -6,14 +6,13 @@ build-backend = "hatchling.build"
 source = "vcs"
 
 [project]
-name = "jsonschema_lexer"
+name = "jsonschema-lexer"
 description = "A Pygments lexer for JSON Schema"
 requires-python = ">=3.10"
 readme = "README.rst"
-license = {text = "MIT"}
-keywords = []
+keywords = ["json", "jsonschema"]
 authors = [
-  {name = "Julian Berman", email = "Julian+jsonschema-lexer@GrayVines.com"},
+  { name = "Julian Berman", email = "Julian+jsonschema-lexer@GrayVines.com" },
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -26,7 +25,8 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
-
+  "Topic :: File Formats :: JSON",
+  "Topic :: File Formats :: JSON :: JSON Schema",
 ]
 dynamic = ["version"]
 dependencies = [
