@@ -2,15 +2,21 @@
 Contains the main functionality of the JSONSchemaLexer.
 """
 
+from __future__ import annotations
+
 from importlib.resources import files
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING
 import json
 
 from pygments.lexers.data import (  # type: ignore[reportMissingTypeStubs]
     JsonLexer,
 )
 from pygments.token import Token
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Any, ClassVar
 
 
 class JSONSchemaLexer(JsonLexer):
@@ -20,13 +26,13 @@ class JSONSchemaLexer(JsonLexer):
 
     name = "JSON Schema"
     url = "https://json-schema.org"
-    aliases: ClassVar[list[str]] = ["jsonschema", "json-schema"]
-    mimetypes: ClassVar[list[str]] = [
+    aliases: Sequence[str] = ["jsonschema", "json-schema"]
+    mimetypes: Sequence[str] = [
         "application/schema+json",
         "application/schema-instance+json",
     ]
 
-    data_types: ClassVar[list[str]] = [
+    data_types: ClassVar[Sequence[str]] = [
         '"object"',
         '"integer"',
         '"string"',
