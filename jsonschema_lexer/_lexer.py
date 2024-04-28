@@ -153,7 +153,7 @@ class JSONSchemaLexer(JsonLexer):
         keywords: list[str],
     ):
         start, token, value = token_tuple
-        keywords = ['"%s"' % keyword for keyword in (keywords)]
+        keywords = [f'"{keyword}"' for keyword in keywords]
         if token is Token.Name.Tag and value in keywords:
             return start, Token.Keyword, value
         elif token is Token.String.Double and value in self.data_types:
