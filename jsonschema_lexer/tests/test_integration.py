@@ -17,7 +17,7 @@ dialects = [
 ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def lexer():
     return JSONSchemaLexer()
 
