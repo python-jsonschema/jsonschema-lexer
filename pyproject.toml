@@ -10,19 +10,21 @@ name = "jsonschema-lexer"
 description = "A Pygments lexer for JSON Schema"
 requires-python = ">=3.10"
 readme = "README.rst"
+license = "MIT"
+license-files = ["COPYING"]
 keywords = ["json", "jsonschema"]
 authors = [
   { name = "Julian Berman", email = "Julian+jsonschema-lexer@GrayVines.com" },
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: File Formats :: JSON",
@@ -56,24 +58,16 @@ skip_covered = true
 
 [tool.doc8]
 ignore = [
-    "D000",  # see PyCQA/doc8#125
-    "D001",  # one sentence per line, so max length doesn't make sense
+  "D000",  # see PyCQA/doc8#125
+  "D001",  # one sentence per line, so max length doesn't make sense
 ]
-
-[tool.isort]
-combine_as_imports = true
-ensure_newline_before_comments = true
-from_first = true
-include_trailing_comma = true
-multi_line_output = 3
-use_parentheses = true
 
 [tool.pyright]
 reportUnnecessaryTypeIgnoreComment = true
 strict = ["**/*.py"]
 exclude = [
-    "**/tests/__init__.py",
-    "**/tests/test_*.py",
+  "**/tests/__init__.py",
+  "**/tests/test_*.py",
 ]
 
 [tool.ruff]
@@ -85,6 +79,7 @@ ignore = [
   "A001",  # It's fine to shadow builtins
   "A002",
   "A003",
+  "A005",
   "ARG",  # This is all wrong whenever an interface is involved
   "ANN",  # Just let the type checker do this
   "B006",  # Mutable arguments require care but are OK if you don't abuse them

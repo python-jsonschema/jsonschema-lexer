@@ -12,14 +12,14 @@ PACKAGE = ROOT / "jsonschema_lexer"
 REQUIREMENTS = dict(
     tests=ROOT / "test-requirements.txt",
 )
-REQUIREMENTS_IN = {
-    path.parent / f"{path.stem}.in" for path in REQUIREMENTS.values()
-}
+REQUIREMENTS_IN = [  # this is actually ordered, as files depend on each other
+    (path.parent / f"{path.stem}.in", path) for path in REQUIREMENTS.values()
+]
 
-
-SUPPORTED = ["pypy3.10", "3.10", "3.11", "3.12"]
+SUPPORTED = ["pypy3.10", "3.10", "3.11", "3.12", "3.13"]
 LATEST = SUPPORTED[-1]
 
+nox.options.default_venv_backend = "uv|virtualenv"
 nox.options.sessions = []
 
 
@@ -35,7 +35,7 @@ def session(default=True, python=LATEST, **kwargs):  # noqa: D103
 @session(python=SUPPORTED)
 def tests(session):
     """
-    Run the test suite.
+    Run the test suite with a corresponding Python version.
     """
     session.install("-r", REQUIREMENTS["tests"])
 
@@ -60,7 +60,7 @@ def tests(session):
                     stdout=summary,
                 )
     else:
-        session.run("python", "-m", "pytest", *session.posargs, PACKAGE)
+        session.run("pytest", *session.posargs, PACKAGE)
 
 
 @session(python=SUPPORTED)
@@ -77,9 +77,15 @@ def build(session):
     """
     Build a distribution suitable for PyPI and check its validity.
     """
-    session.install("build", "twine")
+    session.install("build[uv]", "twine")
     with TemporaryDirectory() as tmpdir:
-        session.run("python", "-m", "build", ROOT, "--outdir", tmpdir)
+        session.run(
+            "pyproject-build",
+            "--installer=uv",
+            ROOT,
+            "--outdir",
+            tmpdir,
+        )
         session.run("twine", "check", "--strict", tmpdir + "/*")
 
 
@@ -95,33 +101,35 @@ def secrets(session):
 @session(tags=["style"])
 def style(session):
     """
-    Check for coding style.
+    Check Python code style.
     """
     session.install("ruff")
-    session.run("ruff", "check", ROOT)
+    session.run("ruff", "check", ROOT, __file__)
 
 
 @session()
 def typing(session):
     """
-    Statically check typing annotations.
+    Check static typing.
     """
     session.install("pyright", ROOT)
-    session.run("pyright", PACKAGE)
+    session.run("pyright", *session.posargs, PACKAGE)
 
 
 @session(default=False)
 def requirements(session):
     """
-    Update requirements files.
+    Update the project's pinned requirements.
+
+    You should commit the result afterwards.
     """
-    session.install("pip-tools")
-    for each in REQUIREMENTS_IN:
-        session.run(
-            "pip-compile",
-            "--resolver",
-            "backtracking",
-            "--strip-extras",
-            "-U",
-            each.relative_to(ROOT),
-        )
+    if session.venv_backend == "uv":
+        cmd = ["uv", "pip", "compile"]
+    else:
+        session.install("pip-tools")
+        cmd = ["pip-compile", "--resolver", "backtracking", "--strip-extras"]
+
+    for each, out in REQUIREMENTS_IN:
+        # otherwise output files end up with silly absolute path comments...
+        relative = each.relative_to(ROOT)
+        session.run(*cmd, "--upgrade", "--output-file", out, relative)
